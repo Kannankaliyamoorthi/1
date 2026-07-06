@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Traffic Violation Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f4f6f8; margin: 0; padding: 30px; }
+        h1 { color: #1a2b4c; }
+        .search-box { margin-bottom: 20px; }
+        input[type=text] { padding: 8px; width: 220px; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 8px 16px; background: #1a2b4c; color: #fff; border: none; border-radius: 4px; cursor: pointer; }
+        table { width: 100%; border-collapse: collapse; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #1a2b4c; color: #fff; }
+        tr:hover { background: #f0f4ff; }
+        .badge { padding: 4px 8px; border-radius: 4px; color: #fff; font-size: 12px; }
+        .no-helmet { background: #e74c3c; }
+        .overspeeding { background: #e67e22; }
+        .signal-jump { background: #8e44ad; }
+        img.thumb { height: 60px; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <h1>🚦 Traffic Violation Detection Dashboard</h1>
+
+    <form class="search-box" method="get">
+        <input type="text" name="plate" placeholder="Search by vehicle number"
+               value="{{ search_plate }}">
+        <button type="submit">Search</button>
+    </form>
+
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Vehicle Number</th>
+            <th>Vehicle Type</th>
+            <th>Violation</th>
+            <th>Speed (km/h)</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Evidence</th>
+        </tr>
+        {% for v in violations %}
+        <tr>
+            <td>{{ v.id }}</td>
+            <td>{{ v.vehicle_number }}</td>
+            <td>{{ v.vehicle_type }}</td>
+            <td>
+                <span class="badge {{ v.violation_type|lower|replace(' ', '-') }}">
+                    {{ v.violation_type }}
+                </span>
+            </td>
+            <td>{{ v.speed_kmph or '-' }}</td>
+            <td>{{ v.violation_date }}</td>
+            <td>{{ v.violation_time }}</td>
+            <td>
+                {% if v.image_path %}
+                <a href="/{{ v.image_path }}" target="_blank">
+                    <img class="thumb" src="/{{ v.image_path }}">
+                </a>
+                {% else %}-{% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
